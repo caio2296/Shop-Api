@@ -1,14 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Shop.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shop.Domain.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace Shop.Persistence.Contexto
 {
-    public class ShopContext : DbContext
+    public class ShopContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>,
+                                                        UserRole, IdentityUserLogin<int>,
+                                                        IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
 
         public ShopContext(DbContextOptions<ShopContext> options) : base(options) {
@@ -25,6 +25,20 @@ namespace Shop.Persistence.Contexto
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<UserRole>(userRole => {
+                userRole.HasKey(ur => new { ur.UserId, ur.RoleId });
+
+                userRole.HasOne(ur => ur.Role)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.RoleId)
+                    .IsRequired();
+
+                userRole.HasOne(ur => ur.User)
+                    .WithMany(r => r.UserRoles)
+                    .HasForeignKey(ur => ur.UserId)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity<Produto>();
             modelBuilder.Entity<Produto>()
