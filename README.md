@@ -22,7 +22,7 @@ Visual Studio 2019 ou superior
 ## Executando a API
 1. Clone o repositório:
 ```bash
- git clone https://github.com/caio2296/Registro-Api.git
+ git clone https://github.com/caio2296/Shop-Api.git
  ```
 2. Abra o projeto no Visual Studio
 
